@@ -20,6 +20,7 @@ router.post('/addCustomer',(req,res,next)=>{
 
     name:req.body.name,
     email:req.body.email,
+    phone:req.body.phone,
     description:req.body.description,
     address:{
       line1: req.body.line1,
@@ -38,6 +39,7 @@ router.post('/addCustomer',(req,res,next)=>{
         custid:call.id,
         name:call.name,
         email:call.email,
+        phone:call.phone,
         line1:call.address.line1,
         city:call.address.city,
         state:call.address.state,
@@ -60,33 +62,43 @@ router.post('/addCustomer',(req,res,next)=>{
 
 })
 
+////
+
+//--From Api 
+
+////
+// //All customers
+// router.get('/allCustomers',(req,res,next)=>{
+
+//   stripe.customers.list(
+//     function(err, customers) {
+//       if(customers){
+//         res.json(customers)
+//       }
+//       if(err){
+//         res.json(err)
+//       }
+//     }
+//   );
+// })
 
 
-//All customers
+//All Customers from Database
 router.get('/allCustomers',(req,res,next)=>{
+  Customers.find().then(theCustomers=> {
+   
+  res.json(theCustomers);
 
-  stripe.customers.list(
-    { limit: req.body.limit },
-    function(err, customers) {
-      if(customers){
-        res.json(customers)
-      }
-      if(err){
-        res.json(err)
-      }
-    }
-  );
-})
+  })
 
+});
 
 //Retreive a customer
-router.get('/getCustomer',(req,res,next)=>{
+router.get('/getCustomer/:Theid',(req,res,next)=>{
+
 
 stripe.customers.retrieve(
-
-  req.body.customer,
-
-  function(err, customer) {
+  req.params.Theid,function(err, customer) {
     if(customer){
       res.json(customer)
     }
@@ -98,11 +110,9 @@ stripe.customers.retrieve(
 })
 
 //Delete a customer
-router.post('/delCustomer',(req,res,next)=>{
+router.post('/delCustomer/:theid',(req,res,next)=>{
 
-console.log(req.body.theCust)
-
-  stripe.customers.del(req.body.theCust,function(err, confirmation) {
+  stripe.customers.del(req.params.theid,function(err, confirmation) {
     if(confirmation){
       Customers.findOneAndDelete({
         custid:confirmation.id

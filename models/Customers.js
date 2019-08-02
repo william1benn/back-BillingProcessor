@@ -5,6 +5,7 @@ const CustomerSchema = new Schema({
   custid:String,
   name:String,
   email:String,
+  phone:String,
   line1:String,
   city:String,
   state:String,
