@@ -59,5 +59,8 @@ app.use('/users', userRoutes);
 const auth = require('./routes/auth');
 app.use('/auth',auth);
 
+const invoice = require('./routes/invoice');
+app.use('/invoice',invoice);
+
 
 module.exports = app;

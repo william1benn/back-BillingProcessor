@@ -9,7 +9,7 @@ const User = require('../models/User');
 
 //Testing for token and correct user
 
-router.get('/',auth,async(req,res,next)=>{
+router.get('/authR',auth,async(req,res,next)=>{
   try{
 const user = await User.findById(req.user.id).select('-password')//removes password form res
 res.json(user);
@@ -22,7 +22,7 @@ res.json(user);
 
 
 
-router.post('/login', async (req,res,next)=>{
+router.post('/loginhere', async (req,res,next)=>{
 
 const {email, password} = req.body;
 
@@ -30,13 +30,13 @@ try{
   let user = await User.findOne({email});
 
   if(!user){
-    return res.json({msg:"Invalid"})
+    return res.status(400).json({msg:"Invalid Credentials"})
   }
 
   const isMatch = await bcrypt.compare(password,user.password);
 
   if(!isMatch){
-    return res.json({msg:"Incorrect Password"});
+    return res.status(400).json({msg:"Invalid Credentials"});
   }
 
   const payload = {
