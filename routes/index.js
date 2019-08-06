@@ -96,7 +96,6 @@ router.get('/allCustomers',(req,res,next)=>{
 //Retreive a customer
 router.get('/getCustomer/:Theid',(req,res,next)=>{
 
-
 stripe.customers.retrieve(
   req.params.Theid,function(err, customer) {
     if(customer){
@@ -129,27 +128,62 @@ router.post('/delCustomer/:theid',(req,res,next)=>{
 })
 
 //Update a customer
+router.post('/updateCustomer/:theId',(req,res,next)=>{
+stripe.customers.update(
+  req.params.theId,
+  {
 
-router.post('/createInvoice',(req,res,next)=>{
-stripe.invoices.create({
-  customer: req.body.customer //needed form customer object
-}, function(err, invoice) {
-if(invoice){
-  res.json(invoice)
+    name:req.body.name,
+    email:req.body.email,
+    phone:req.body.phone,
+    description:req.body.description,
+    address:{
+      line1: req.body.line1,
+       city: req.body.city,
+       country: req.body.country,
+       postal_code: req.body.postal_code,
+       state: req.body.state,
+    },
+    balance:req.body.balance,
+
+  },
+    function(err, call) {
+
+   if(call){
+     
+    Customers.findOneAndUpdate({custid: call.id},{
+
+      name:call.name,
+      email:call.email,
+      phone:call.phone,
+      line1:call.address.line1,
+      city:call.address.city,
+      state:call.address.state,
+      country:call.address.country,
+      postal_code:call.address.postal_code,
+      description:call.description,
+      balance:call.balance,
+
+  }).then((x)=>{
+    res.json("Success")
+
+  }).catch((error)=>{
+   console.log(error)
+  })
+
+  if(err){
+    res.json(err)
+  }
 }
-if(err){
-  res.json(err)
-}
-});
 })
 
-
-
+})
   
 
 
 
 
 
+  
 
 module.exports = router;

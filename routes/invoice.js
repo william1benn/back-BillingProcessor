@@ -6,17 +6,19 @@ const stripe = require("stripe")("sk_test_j8s4CsAyn22jIGhbjmVG0tqh00XkCOAEFx");
 
 
 //Create A Invoice Item
-router.post('/InvoiceMethod',(req, res, next) => {
+router.post('/InvoiceMethod/:Theid',(req, res, next) => {
+
+  console.log(req.body.amount)
 
 stripe.invoiceItems.create({
-  customer: req.body.customer,
+  customer: req.params.Theid,
   amount: req.body.amount,
   currency: "usd",
   description: req.body.description,
 }, function(err, invoiceItem) {
   if(invoiceItem){
 
-    res.json(invoiceItem)
+    res.json("ok")
 
   }
   if(err){
