@@ -2,6 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const auth = require('../middleware/auth');
 const User = require('../models/User');
+const Customers = require('../models/Customers');
 const stripe = require("stripe")("sk_test_j8s4CsAyn22jIGhbjmVG0tqh00XkCOAEFx");
 
 
@@ -60,17 +61,53 @@ router.post('/createInvoice',(req, res, next) => {
 
   }, function(err, invoice) {
     if(invoice){
+      Customers.findOneAndUpdate({custid: invoice.customer},{
 
+        invID:invoice.id,
+
+    }).then(()=>{
+      console.log("okay")
       res.json(invoice)
-
-
-    }
+    }).catch((error)=>{
+      console.log(error)
+    })
     if(err){
 
       return res.status(400).json(err);
     }
+  }
 
   });
+})
+
+router.get('/InvID/:theID',(req,res,next)=>{
+  let ID = req.params.theID
+  Customers.findOne({custid:ID})
+  .then((call)=>{
+    res.json(call)
+  }).catch((error)=>{
+    res.json(error)
+  })
+
+})
+
+//Get Invoice From Stripe
+router.get('/getInvoice/:TheId',(req,res,next)=>{
+  stripe.invoices.retrieve(
+    req.params.TheId,
+    function(err, invoice) {
+      if(invoice){
+
+      res.json(invoice)
+
+      }
+      if(err){
+
+      return res.status(400).json(err)
+
+      }
+    }
+  );
 })
 
 

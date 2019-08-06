@@ -15,7 +15,10 @@ const UserSchema = new Schema({
   password:{
     type:String,
     required:true
-  }
+  },
+  //Api Key
+  apiKey:String,
+  apiSecret:String,
 
 });
 

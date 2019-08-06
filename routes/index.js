@@ -16,6 +16,8 @@ router.get('/balance',auth,(req, res, next) => {
 
 router.post('/addCustomer',(req,res,next)=>{
 
+  console.log(req.user)
+
   stripe.customers.create({ 
 
     name:req.body.name,
@@ -107,6 +109,8 @@ stripe.customers.retrieve(
   }
 );
 })
+
+
 
 //Delete a customer
 router.post('/delCustomer/:theid',(req,res,next)=>{
